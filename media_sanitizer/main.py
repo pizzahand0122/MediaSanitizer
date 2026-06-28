@@ -1,22 +1,22 @@
 import sys
 
-from media_sanitizer.scanner import scan
+from media_sanitizer.inspector import inspect
 
 
 def main():
     if len(sys.argv) != 2:
-        print("Usage: python -m media_sanitizer.main <directory>")
+        print("Usage: python -m media_sanitizer.main <file>")
         return
 
-    files = scan(sys.argv[1])
+    media = inspect(sys.argv[1])
 
-    print(f"\nFound {len(files):,} media files.\n")
+    print(media["container"]["type"])
 
-    for file in files[:10]:
-        print(file)
-
-    if len(files) > 10:
-        print(f"\n...and {len(files) - 10:,} more.")
+    for track in media["tracks"]:
+        print(
+            track["type"],
+            track["properties"].get("language", "und"),
+        )
 
 
 if __name__ == "__main__":
