@@ -10,7 +10,13 @@ def main():
 
     files = scan(sys.argv[1])
 
-    print(f"Found {len(files)} media files.")
+    print(f"\nFound {len(files):,} media files.\n")
+
+    for file in files[:10]:
+        print(file)
+
+    if len(files) > 10:
+        print(f"\n...and {len(files) - 10:,} more.")
 
 
 if __name__ == "__main__":

@@ -9,12 +9,13 @@ MEDIA_EXTENSIONS = {
 }
 
 
-def scan(path: str) -> list[Path]:
-    """Return a list of media files found under a directory."""
+def scan(path: str):
     root = Path(path)
 
-    return [
-        file
-        for file in root.rglob("*")
-        if file.is_file() and file.suffix.lower() in MEDIA_EXTENSIONS
-    ]
+    media = []
+
+    for file in root.rglob("*"):
+        if file.is_file() and file.suffix.lower() in MEDIA_EXTENSIONS:
+            media.append(file)
+
+    return sorted(media)
