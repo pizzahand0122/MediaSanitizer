@@ -10,12 +10,14 @@ def main():
 
     media = inspect(sys.argv[1])
 
-    print(media["container"]["type"])
+    print(f"\n{media.path}\n")
 
-    for track in media["tracks"]:
+    for track in media.tracks:
         print(
-            track["type"],
-            track["properties"].get("language", "und"),
+            f"{track.id:2} | "
+            f"{track.type:9} | "
+            f"{track.language:3} | "
+            f"default={track.default}"
         )
 
 
