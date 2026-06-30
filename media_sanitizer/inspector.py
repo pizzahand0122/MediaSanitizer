@@ -1,9 +1,3 @@
-import json
-import subprocess
-
-from media_sanitizer.models import MediaFile, Track
-
-
 def inspect(path: str) -> MediaFile:
     result = subprocess.run(
         ["mkvmerge", "-J", path],
@@ -17,14 +11,34 @@ def inspect(path: str) -> MediaFile:
     tracks = []
 
     for track in data["tracks"]:
-        tracks.append(
-            Track(
-                id=track["id"],
-                type=track["type"],
-                language=track["properties"].get("language", "und"),
-                default=track["properties"].get("default_track", False),
+        properties = track["properties"]
+
+        if track["type"] == "video":
+            tracks.append(
+                VideoTrack(
+                    id=track["id"],
+                    language=properties.get("language", "und"),
+                    default=properties.get("default_track", False),
+                )
             )
-        )
+
+        elif track["type"] == "audio":
+            tracks.append(
+                AudioTrack(
+                    id=track["id"],
+                    language=properties.get("language", "und"),
+                    default=properties.get("default_track", False),
+                )
+            )
+
+        elif track["type"] == "subtitles":
+            tracks.append(
+                SubtitleTrack(
+                    id=track["id"],
+                    language=properties.get("language", "und"),
+                    default=properties.get("default_track", False),
+                )
+            )
 
     return MediaFile(
         path=path,

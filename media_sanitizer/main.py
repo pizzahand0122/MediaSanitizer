@@ -10,15 +10,11 @@ def main():
 
     media = inspect(sys.argv[1])
 
-    print(f"\n{media.path}\n")
+    print(f"Found {len(media.tracks)} tracks.\n")
+    print(f"{media.path}\n")
 
     for track in media.tracks:
-        print(
-            f"{track.id:2} | "
-            f"{track.type:9} | "
-            f"{track.language:3} | "
-            f"default={track.default}"
-        )
+        print(type(track).__name__)
 
 
 if __name__ == "__main__":
