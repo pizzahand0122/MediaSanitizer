@@ -1,6 +1,7 @@
 import sys
 
 from media_sanitizer.inspector import inspect
+from media_sanitizer.report import print_report
 
 
 def main():
@@ -9,12 +10,7 @@ def main():
         return
 
     media = inspect(sys.argv[1])
-
-    print(f"Found {len(media.tracks)} tracks.\n")
-    print(f"{media.path}\n")
-
-    for track in media.tracks:
-        print(type(track).__name__)
+    print_report(media)
 
 
 if __name__ == "__main__":
