@@ -1,6 +1,6 @@
 import argparse
 
-from media_sanitizer.audit import default_audio_issues
+from media_sanitizer.audits.audio import default_audio_issues
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 

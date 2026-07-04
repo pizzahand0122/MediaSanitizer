@@ -8,6 +8,7 @@ def default_audio_issues(media: MediaFile) -> list[str]:
         return ["No default audio track."]
 
     if len(defaults) > 1:
-        return ["Multiple default audio tracks."]
+        ids = ", ".join(str(track.id) for track in defaults)
+        return [f"Multiple default audio tracks (IDs: {ids})."]
 
     return []
