@@ -1,7 +1,7 @@
 from media_sanitizer.models import MediaFile
 
 
-def print_report(media: MediaFile):
+def print_report(media: MediaFile, issues: list[str]):
     print(f"\n{media.path}")
     print("=" * len(media.path))
 
@@ -24,3 +24,10 @@ def print_report(media: MediaFile):
             f"Language: {track.language} | "
             f"Default: {track.default}"
         )
+
+    if issues:
+        print("\nIssues:")
+        for issue in issues:
+            print(f"  - {issue}")
+    else:
+        print("\n✓ No issues found.")
