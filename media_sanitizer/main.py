@@ -1,5 +1,6 @@
 import argparse
 
+from media_sanitizer.audit import default_audio_issues
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 
@@ -26,6 +27,16 @@ def main():
     if args.command == "inspect":
         media = inspect(args.file)
         print_report(media)
+
+        issues = default_audio_issues(media)
+
+        if issues:
+            print("\nIssues:")
+            for issue in issues:
+                print(f"  - {issue}")
+        else:
+            print("\n✓ No default audio issues found.")
+
     else:
         parser.print_help()
 
