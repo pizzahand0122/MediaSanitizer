@@ -1,6 +1,6 @@
 import argparse
 
-from media_sanitizer.audits.audio import default_audio_issues
+from media_sanitizer.audits.audio import run_audio_audits
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 
@@ -28,7 +28,7 @@ def main():
         media = inspect(args.file)
         print_report(media)
 
-        issues = default_audio_issues(media)
+        issues = run_audio_audits(media)
 
         if issues:
             print("\nIssues:")
