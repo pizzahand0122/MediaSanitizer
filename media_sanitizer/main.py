@@ -1,16 +1,33 @@
-import sys
+import argparse
 
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 
 
 def main():
-    if len(sys.argv) != 2:
-        print("Usage: python -m media_sanitizer.main <file>")
-        return
+    parser = argparse.ArgumentParser(
+        prog="mediasanitizer",
+        description="Audit and repair media libraries safely."
+    )
 
-    media = inspect(sys.argv[1])
-    print_report(media)
+    subparsers = parser.add_subparsers(dest="command")
+
+    inspect_parser = subparsers.add_parser(
+        "inspect",
+        help="Inspect a single media file"
+    )
+    inspect_parser.add_argument(
+        "file",
+        help="Path to the media file"
+    )
+
+    args = parser.parse_args()
+
+    if args.command == "inspect":
+        media = inspect(args.file)
+        print_report(media)
+    else:
+        parser.print_help()
 
 
 if __name__ == "__main__":
