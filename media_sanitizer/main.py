@@ -6,6 +6,7 @@ from media_sanitizer.audits.subtitles import run_subtitle_audits
 from media_sanitizer.audits.summary import run_summary_audits
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
+from media_sanitizer.scanner import scan
 
 
 def main():
@@ -18,27 +19,28 @@ def main():
 
     inspect_parser = subparsers.add_parser(
         "inspect",
-        help="Inspect a single media file"
+        help="Inspect a media file or directory"
     )
 
     inspect_parser.add_argument(
-        "file",
-        help="Path to the media file"
+        "path",
+        help="Path to a media file or directory"
     )
 
     args = parser.parse_args()
 
     if args.command == "inspect":
-        media = inspect(args.file)
+        for file in scan(args.path):
+            media = inspect(str(file))
 
-        issues = []
+            issues = []
 
-        issues.extend(run_audio_audits(media))
-        issues.extend(run_subtitle_audits(media))
-        issues.extend(run_language_audits(media))
-        issues.extend(run_summary_audits(media))
+            issues.extend(run_audio_audits(media))
+            issues.extend(run_subtitle_audits(media))
+            issues.extend(run_language_audits(media))
+            issues.extend(run_summary_audits(media))
 
-        print_report(media, issues)
+            print_report(media, issues)
 
     else:
         parser.print_help()

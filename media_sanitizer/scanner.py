@@ -9,6 +9,13 @@ MEDIA_EXTENSIONS = {
 
 
 def scan(path: str):
-    for file in Path(path).rglob("*"):
-        if file.suffix.lower() in MEDIA_EXTENSIONS:
+    path = Path(path)
+
+    if path.is_file():
+        if path.suffix.lower() in MEDIA_EXTENSIONS:
+            yield path
+        return
+
+    for file in path.rglob("*"):
+        if file.is_file() and file.suffix.lower() in MEDIA_EXTENSIONS:
             yield file
