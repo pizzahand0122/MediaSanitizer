@@ -1,4 +1,5 @@
 from media_sanitizer.models import Issue, MediaFile
+from media_sanitizer.utils import language_name
 
 
 def print_report(media: MediaFile, issues: list[Issue]):
@@ -18,8 +19,8 @@ def print_report(media: MediaFile, issues: list[Issue]):
     for track in media.audio_tracks():
         line = (
             f"  ID {track.id} | "
-            f"Language: {track.language} | "
-            f"Default: {track.default}"
+            f"Language: {language_name(track.language)} | "
+            f"Default: {'Yes' if track.default else 'No'}"
         )
 
         if track.name:
@@ -31,8 +32,8 @@ def print_report(media: MediaFile, issues: list[Issue]):
     for track in media.subtitle_tracks():
         line = (
             f"  ID {track.id} | "
-            f"Language: {track.language} | "
-            f"Default: {track.default}"
+            f"Language: {language_name(track.language)} | "
+            f"Default: {'Yes' if track.default else 'No'}"
         )
 
         if track.name:
