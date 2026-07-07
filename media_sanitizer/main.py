@@ -52,12 +52,13 @@ def main():
         print(f"Files scanned: {summary.files_scanned}")
         print(f"Healthy files: {summary.healthy_files}")
         print(f"Files with issues: {summary.files_with_issues}")
-        print()
-        print(f"Default audio issues: {summary.default_audio_issues}")
-        print(f"Default subtitle issues: {summary.default_subtitle_issues}")
-        print(f"English audio issues: {summary.english_audio_issues}")
-        print(f"English subtitle issues: {summary.english_subtitle_issues}")
-        print(f"Commentary tracks: {summary.commentary_tracks}")
+
+        if summary.issue_counts:
+            print("\nIssue Summary")
+            print("-------------")
+
+            for title, count in sorted(summary.issue_counts.items()):
+                print(f"{title}: {count}")
 
     else:
         parser.print_help()
