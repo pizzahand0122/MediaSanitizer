@@ -4,9 +4,10 @@ from media_sanitizer.models import Issue, MediaFile
 def default_subtitle_issues(media: MediaFile) -> list[Issue]:
     defaults = [track for track in media.subtitle_tracks() if track.default]
 
-    if len(defaults) == 0 and len(media.subtitle_tracks()) > 0:
+    if len(defaults) == 0 and media.subtitle_tracks():
         return [
             Issue(
+                code="DEFAULT_SUBTITLE",
                 title="Default Subtitle",
                 message="No default subtitle track.",
             )
@@ -16,6 +17,7 @@ def default_subtitle_issues(media: MediaFile) -> list[Issue]:
         ids = ", ".join(str(track.id) for track in defaults)
         return [
             Issue(
+                code="DEFAULT_SUBTITLE",
                 title="Default Subtitle",
                 message=f"Multiple default subtitle tracks (IDs: {ids}).",
             )

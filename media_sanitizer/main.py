@@ -6,6 +6,7 @@ from media_sanitizer.audits.subtitles import run_subtitle_audits
 from media_sanitizer.audits.summary import run_summary_audits
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
+from media_sanitizer.repairs.runner import build_repair_plan
 from media_sanitizer.scanner import scan
 from media_sanitizer.summary import ScanSummary, update_summary
 
@@ -34,11 +35,17 @@ def main():
         help="Print a detailed report for every file"
     )
 
+    inspect_parser.add_argument(
+        "--repair-plan",
+        action="store_true",
+        help="Show possible repairs"
+    )
+
     args = parser.parse_args()
 
-    summary = ScanSummary()
-
     if args.command == "inspect":
+        summary = ScanSummary()
+
         for file in scan(args.path):
             media = inspect(str(file))
 
@@ -54,6 +61,16 @@ def main():
             if args.details:
                 print_report(media, issues)
 
+            if args.repair_plan:
+                actions = build_repair_plan(media, issues)
+
+                if actions:
+                    print(f"\nRepair Plan for {media.path}")
+
+                    for action in actions:
+                        print(f"  ✓ {action.title}")
+                        print("    " + " ".join(action.command))
+
         print("\nScan Summary")
         print("============")
         print(f"Files scanned: {summary.files_scanned}")
@@ -64,11 +81,13 @@ def main():
             print("\nIssue Summary")
             print("-------------")
 
-            width = max(len(title) for title in summary.issue_counts)
+            width = max(len(code) for code in summary.issue_counts)
 
-            for title, count in sorted(summary.issue_counts.items()):
-                dots = "." * (width - len(title) + 6)
-                print(f"{title}{dots}{count}")
+            for code, count in sorted(summary.issue_counts.items()):
+                print(f"{code:.<{width + 6}}{count}")
+
+        else:
+            print("\nNo issues found. 🎉")
 
     else:
         parser.print_help()

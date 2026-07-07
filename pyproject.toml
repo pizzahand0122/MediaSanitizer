@@ -1,0 +1,20 @@
+[build-system]
+requires = ["setuptools>=69"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "mediasanitizer"
+version = "0.3.1a0"
+description = "Audit and repair media libraries safely."
+readme = "README.md"
+requires-python = ">=3.11"
+license = { text = "MIT" }
+authors = [
+    { name = "Taylor Pollman" }
+]
+
+[project.scripts]
+mediasanitizer = "media_sanitizer.main:main"
+
+[tool.setuptools.packages.find]
+include = ["media_sanitizer*"]

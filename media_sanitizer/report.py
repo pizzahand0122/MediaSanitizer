@@ -44,6 +44,6 @@ def print_report(media: MediaFile, issues: list[Issue]):
     if issues:
         print("\nIssues:")
         for issue in issues:
-            print(f"  - [{issue.title}] {issue.message}")
+            print(f"  - [{issue.code}] {issue.message}")
     else:
         print("\n✓ No issues found.")

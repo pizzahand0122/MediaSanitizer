@@ -63,8 +63,10 @@ class MediaFile:
             track.language == "eng"
             for track in self.subtitle_tracks()
         )
-    
+
+
 @dataclass
 class Issue:
+    code: str
     title: str
     message: str

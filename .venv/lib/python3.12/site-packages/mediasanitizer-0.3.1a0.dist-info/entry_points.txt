@@ -1,0 +1,2 @@
+[console_scripts]
+mediasanitizer = media_sanitizer.main:main

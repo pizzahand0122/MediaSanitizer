@@ -22,4 +22,4 @@ def update_summary(summary: ScanSummary, issues: list[Issue]) -> None:
         summary.healthy_files += 1
 
     for issue in issues:
-        summary.issue_counts[issue.title] += 1
+        summary.issue_counts[issue.code] += 1

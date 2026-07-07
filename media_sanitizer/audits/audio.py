@@ -7,6 +7,7 @@ def default_audio_issues(media: MediaFile) -> list[Issue]:
     if len(defaults) == 0:
         return [
             Issue(
+                code="DEFAULT_AUDIO",
                 title="Default Audio",
                 message="No default audio track.",
             )
@@ -16,6 +17,7 @@ def default_audio_issues(media: MediaFile) -> list[Issue]:
         ids = ", ".join(str(track.id) for track in defaults)
         return [
             Issue(
+                code="DEFAULT_AUDIO",
                 title="Default Audio",
                 message=f"Multiple default audio tracks (IDs: {ids}).",
             )
@@ -26,21 +28,26 @@ def default_audio_issues(media: MediaFile) -> list[Issue]:
     if default.language != "eng" and media.has_english_audio():
         return [
             Issue(
+                code="DEFAULT_AUDIO",
                 title="Default Audio",
-                message=f'Default audio is "{default.language}" but English audio is available.',
+                message=(
+                    f'Default audio is "{default.language}" '
+                    "but English audio is available."
+                ),
             )
         ]
 
     return []
 
 
-def commentary_audio_issues(media: MediaFile) -> list[Issue]:
+def commentary_issues(media: MediaFile) -> list[Issue]:
     issues = []
 
     for track in media.audio_tracks():
         if track.name and "commentary" in track.name.lower():
             issues.append(
                 Issue(
+                    code="COMMENTARY",
                     title="Commentary",
                     message=f"Commentary audio track detected (Track ID {track.id}).",
                 )
@@ -53,6 +60,6 @@ def run_audio_audits(media: MediaFile) -> list[Issue]:
     issues = []
 
     issues.extend(default_audio_issues(media))
-    issues.extend(commentary_audio_issues(media))
+    issues.extend(commentary_issues(media))
 
     return issues
