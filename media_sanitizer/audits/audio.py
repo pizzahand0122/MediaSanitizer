@@ -26,7 +26,7 @@ def commentary_audio_issues(media: MediaFile) -> list[str]:
 
     for track in media.audio_tracks():
         if track.name and "commentary" in track.name.lower():
-            issues.append(f'Commentary track detected (Track ID {track.id}).')
+            issues.append(f'Commentary audio track detected (Track ID {track.id}).')
 
     return issues
 

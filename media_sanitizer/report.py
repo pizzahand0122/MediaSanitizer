@@ -7,23 +7,38 @@ def print_report(media: MediaFile, issues: list[str]):
 
     print(f"\nVideo Tracks ({len(media.video_tracks())})")
     for track in media.video_tracks():
-        print(f"  ID {track.id}")
+        line = f"  ID {track.id}"
+
+        if track.name:
+            line += f" | Name: {track.name}"
+
+        print(line)
 
     print(f"\nAudio Tracks ({len(media.audio_tracks())})")
     for track in media.audio_tracks():
-        print(
+        line = (
             f"  ID {track.id} | "
             f"Language: {track.language} | "
             f"Default: {track.default}"
         )
 
+        if track.name:
+            line += f" | Name: {track.name}"
+
+        print(line)
+
     print(f"\nSubtitle Tracks ({len(media.subtitle_tracks())})")
     for track in media.subtitle_tracks():
-        print(
+        line = (
             f"  ID {track.id} | "
             f"Language: {track.language} | "
             f"Default: {track.default}"
         )
+
+        if track.name:
+            line += f" | Name: {track.name}"
+
+        print(line)
 
     if issues:
         print("\nIssues:")
