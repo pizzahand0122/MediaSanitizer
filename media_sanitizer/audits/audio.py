@@ -21,9 +21,20 @@ def default_audio_issues(media: MediaFile) -> list[str]:
     return []
 
 
+def commentary_audio_issues(media: MediaFile) -> list[str]:
+    issues = []
+
+    for track in media.audio_tracks():
+        if track.name and "commentary" in track.name.lower():
+            issues.append(f'Commentary track detected (Track ID {track.id}).')
+
+    return issues
+
+
 def run_audio_audits(media: MediaFile) -> list[str]:
     issues = []
 
     issues.extend(default_audio_issues(media))
+    issues.extend(commentary_audio_issues(media))
 
     return issues

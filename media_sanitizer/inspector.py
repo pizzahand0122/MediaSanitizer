@@ -5,7 +5,6 @@ from media_sanitizer.models import (
     AudioTrack,
     MediaFile,
     SubtitleTrack,
-    Track,
     VideoTrack,
 )
 
@@ -31,6 +30,7 @@ def inspect(path: str) -> MediaFile:
                     id=track["id"],
                     language=properties.get("language", "und"),
                     default=properties.get("default_track", False),
+                    name=properties.get("track_name"),
                 )
             )
 
@@ -40,6 +40,7 @@ def inspect(path: str) -> MediaFile:
                     id=track["id"],
                     language=properties.get("language", "und"),
                     default=properties.get("default_track", False),
+                    name=properties.get("track_name"),
                 )
             )
 
@@ -49,6 +50,7 @@ def inspect(path: str) -> MediaFile:
                     id=track["id"],
                     language=properties.get("language", "und"),
                     default=properties.get("default_track", False),
+                    name=properties.get("track_name"),
                 )
             )
 

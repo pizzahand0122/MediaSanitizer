@@ -6,6 +6,7 @@ class Track:
     id: int
     language: str
     default: bool
+    name: str | None = None
 
 
 @dataclass
@@ -62,3 +63,8 @@ class MediaFile:
             track.language == "eng"
             for track in self.subtitle_tracks()
         )
+    
+@dataclass
+class Issue:
+    title: str
+    message: str
