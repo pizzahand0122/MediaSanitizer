@@ -7,6 +7,7 @@ from media_sanitizer.audits.summary import run_summary_audits
 from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 from media_sanitizer.scanner import scan
+from media_sanitizer.summary import ScanSummary, update_summary
 
 
 def main():
@@ -30,6 +31,8 @@ def main():
     args = parser.parse_args()
 
     if args.command == "inspect":
+        summary = ScanSummary()
+
         for file in scan(args.path):
             media = inspect(str(file))
 
@@ -40,7 +43,21 @@ def main():
             issues.extend(run_language_audits(media))
             issues.extend(run_summary_audits(media))
 
+            update_summary(summary, issues)
+
             print_report(media, issues)
+
+        print("\nScan Summary")
+        print("============")
+        print(f"Files scanned: {summary.files_scanned}")
+        print(f"Healthy files: {summary.healthy_files}")
+        print(f"Files with issues: {summary.files_with_issues}")
+        print()
+        print(f"Default audio issues: {summary.default_audio_issues}")
+        print(f"Default subtitle issues: {summary.default_subtitle_issues}")
+        print(f"English audio issues: {summary.english_audio_issues}")
+        print(f"English subtitle issues: {summary.english_subtitle_issues}")
+        print(f"Commentary tracks: {summary.commentary_tracks}")
 
     else:
         parser.print_help()
