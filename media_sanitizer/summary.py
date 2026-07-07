@@ -1,4 +1,5 @@
-from dataclasses import dataclass
+from collections import Counter
+from dataclasses import dataclass, field
 
 from media_sanitizer.models import Issue
 
@@ -9,11 +10,7 @@ class ScanSummary:
     healthy_files: int = 0
     files_with_issues: int = 0
 
-    default_audio_issues: int = 0
-    default_subtitle_issues: int = 0
-    english_audio_issues: int = 0
-    english_subtitle_issues: int = 0
-    commentary_tracks: int = 0
+    issue_counts: Counter = field(default_factory=Counter)
 
 
 def update_summary(summary: ScanSummary, issues: list[Issue]) -> None:
@@ -25,18 +22,4 @@ def update_summary(summary: ScanSummary, issues: list[Issue]) -> None:
         summary.healthy_files += 1
 
     for issue in issues:
-        match issue.title:
-            case "Default Audio":
-                summary.default_audio_issues += 1
-
-            case "Default Subtitle":
-                summary.default_subtitle_issues += 1
-
-            case "English Audio":
-                summary.english_audio_issues += 1
-
-            case "English Subtitles":
-                summary.english_subtitle_issues += 1
-
-            case "Commentary":
-                summary.commentary_tracks += 1
+        summary.issue_counts[issue.title] += 1
