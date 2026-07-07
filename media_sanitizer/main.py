@@ -28,11 +28,17 @@ def main():
         help="Path to a media file or directory"
     )
 
+    inspect_parser.add_argument(
+        "--details",
+        action="store_true",
+        help="Print a detailed report for every file"
+    )
+
     args = parser.parse_args()
 
-    if args.command == "inspect":
-        summary = ScanSummary()
+    summary = ScanSummary()
 
+    if args.command == "inspect":
         for file in scan(args.path):
             media = inspect(str(file))
 
@@ -45,7 +51,8 @@ def main():
 
             update_summary(summary, issues)
 
-            print_report(media, issues)
+            if args.details:
+                print_report(media, issues)
 
         print("\nScan Summary")
         print("============")
@@ -57,8 +64,11 @@ def main():
             print("\nIssue Summary")
             print("-------------")
 
+            width = max(len(title) for title in summary.issue_counts)
+
             for title, count in sorted(summary.issue_counts.items()):
-                print(f"{title}: {count}")
+                dots = "." * (width - len(title) + 6)
+                print(f"{title}{dots}{count}")
 
     else:
         parser.print_help()
