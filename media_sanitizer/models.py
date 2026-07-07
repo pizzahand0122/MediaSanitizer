@@ -42,10 +42,23 @@ class MediaFile:
             if track.default:
                 return track
 
-        return None      
+        return None
 
     def has_english_audio(self):
         return any(
             track.language == "eng"
             for track in self.audio_tracks()
+        )
+
+    def default_subtitle(self):
+        for track in self.subtitle_tracks():
+            if track.default:
+                return track
+
+        return None
+
+    def has_english_subtitles(self):
+        return any(
+            track.language == "eng"
+            for track in self.subtitle_tracks()
         )
