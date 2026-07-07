@@ -4,6 +4,15 @@ from dataclasses import dataclass, field
 from media_sanitizer.models import Issue
 
 
+ISSUE_TITLES = {
+    "DEFAULT_AUDIO": "Default Audio",
+    "DEFAULT_SUBTITLE": "Default Subtitle",
+    "ENGLISH_AUDIO": "English Audio",
+    "ENGLISH_SUBTITLE": "English Subtitle",
+    "COMMENTARY": "Commentary",
+}
+
+
 @dataclass
 class ScanSummary:
     files_scanned: int = 0

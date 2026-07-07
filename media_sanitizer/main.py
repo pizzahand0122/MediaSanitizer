@@ -8,37 +8,41 @@ from media_sanitizer.inspector import inspect
 from media_sanitizer.report import print_report
 from media_sanitizer.repairs.runner import build_repair_plan
 from media_sanitizer.scanner import scan
-from media_sanitizer.summary import ScanSummary, update_summary
+from media_sanitizer.summary import (
+    ISSUE_TITLES,
+    ScanSummary,
+    update_summary,
+)
 
 
 def main():
     parser = argparse.ArgumentParser(
         prog="mediasanitizer",
-        description="Audit and repair media libraries safely."
+        description="Audit and repair media libraries safely.",
     )
 
     subparsers = parser.add_subparsers(dest="command")
 
     inspect_parser = subparsers.add_parser(
         "inspect",
-        help="Inspect a media file or directory"
+        help="Inspect a media file or directory",
     )
 
     inspect_parser.add_argument(
         "path",
-        help="Path to a media file or directory"
+        help="Path to a media file or directory",
     )
 
     inspect_parser.add_argument(
         "--details",
         action="store_true",
-        help="Print a detailed report for every file"
+        help="Print a detailed report for every file",
     )
 
     inspect_parser.add_argument(
         "--repair-plan",
         action="store_true",
-        help="Show possible repairs"
+        help="Show possible repairs",
     )
 
     args = parser.parse_args()
@@ -81,10 +85,15 @@ def main():
             print("\nIssue Summary")
             print("-------------")
 
-            width = max(len(code) for code in summary.issue_counts)
+            titles = [
+                ISSUE_TITLES.get(code, code)
+                for code in summary.issue_counts
+            ]
+            width = max(len(title) for title in titles)
 
             for code, count in sorted(summary.issue_counts.items()):
-                print(f"{code:.<{width + 6}}{count}")
+                title = ISSUE_TITLES.get(code, code)
+                print(f"{title:.<{width + 6}}{count}")
 
         else:
             print("\nNo issues found. 🎉")

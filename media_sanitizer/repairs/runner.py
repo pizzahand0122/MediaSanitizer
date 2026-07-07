@@ -9,16 +9,9 @@ def build_repair_plan(
 ) -> list[RepairAction]:
     actions = []
 
-    print("\nDEBUG: Issues received:")
-    for issue in issues:
-        print(issue)
-
     for issue in issues:
         match issue.code:
             case "DEFAULT_AUDIO":
-                print("DEBUG: Matched DEFAULT_AUDIO")
                 actions.extend(repair_default_audio(media))
-
-    print(f"DEBUG: Actions generated: {len(actions)}")
 
     return actions
