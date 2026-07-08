@@ -1,5 +1,4 @@
-from pathlib import Path
-
+from media_sanitizer.display import display_media
 from media_sanitizer.repairs.models import RepairAction
 from media_sanitizer.summary import ISSUE_TITLES, ScanSummary
 
@@ -33,8 +32,9 @@ def print_repair_preview(
     media_path: str,
     actions: list[RepairAction],
 ):
-    print(f"\n{Path(media_path).stem}")
+    media = display_media(media_path)
+
+    print(f"\n{media.title}")
 
     for action in actions:
-        print(f"  ✓ {action.title}")
-        print(f"      {action.summary}")
+        print(f"    {action.summary}")
