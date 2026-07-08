@@ -1,6 +1,7 @@
 import argparse
 
 from media_sanitizer.commands.inspect import run_inspect
+from media_sanitizer.commands.repair import run_repair
 
 
 def main():
@@ -27,16 +28,30 @@ def main():
         help="Print a detailed report for every file",
     )
 
-    inspect_parser.add_argument(
-        "--repair-plan",
+    repair_parser = subparsers.add_parser(
+        "repair",
+        help="Preview or execute media repairs",
+    )
+
+    repair_parser.add_argument(
+        "path",
+        help="Path to a media file or directory",
+    )
+
+    repair_parser.add_argument(
+        "--dry-run",
         action="store_true",
-        help="Show possible repairs",
+        help="Preview repairs without modifying files",
     )
 
     args = parser.parse_args()
 
     if args.command == "inspect":
         run_inspect(args)
+
+    elif args.command == "repair":
+        run_repair(args)
+
     else:
         parser.print_help()
 

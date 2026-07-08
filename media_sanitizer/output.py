@@ -1,3 +1,6 @@
+from pathlib import Path
+
+from media_sanitizer.repairs.models import RepairAction
 from media_sanitizer.summary import ISSUE_TITLES, ScanSummary
 
 
@@ -24,3 +27,13 @@ def print_summary(summary: ScanSummary):
             print(f"{title:.<{width + 6}}{count}")
     else:
         print("\nNo issues found. 🎉")
+
+
+def print_repair_preview(
+    media_path: str,
+    actions: list[RepairAction],
+):
+    print(f"\n{Path(media_path).name}")
+
+    for action in actions:
+        print(f"  ✓ {action.title}")
