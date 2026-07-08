@@ -33,7 +33,8 @@ def print_repair_preview(
     media_path: str,
     actions: list[RepairAction],
 ):
-    print(f"\n{Path(media_path).name}")
+    print(f"\n{Path(media_path).stem}")
 
     for action in actions:
         print(f"  ✓ {action.title}")
+        print(f"      {action.summary}")
