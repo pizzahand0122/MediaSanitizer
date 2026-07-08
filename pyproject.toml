@@ -4,7 +4,7 @@ build-backend = "setuptools.build_meta"
 
 [project]
 name = "mediasanitizer"
-version = "0.3.1a0"
+version = "0.4.0a0"
 description = "Audit and repair media libraries safely."
 readme = "README.md"
 requires-python = ">=3.11"
