@@ -7,6 +7,7 @@ from unittest.mock import patch
 
 from media_sanitizer.main import main
 from media_sanitizer.models import FileScanResult
+from media_sanitizer.repair import RepairResult
 
 
 class MainTests(unittest.TestCase):
@@ -113,6 +114,131 @@ class MainTests(unittest.TestCase):
                 output.getvalue(),
                 f"Error: not a directory: {file}\n",
             )
+
+
+class RepairCliTests(unittest.TestCase):
+    class RecordingExecutor:
+        executable = "mkvpropedit"
+
+        def __init__(self):
+            self.calls = []
+
+        def execute(self, plan, *, confirmed=False, keep_backup=False):
+            self.calls.append((plan, confirmed, keep_backup))
+            return RepairResult(
+                plan.path,
+                (
+                    plan.path.with_name(f"{plan.path.name}.mediasanitizer.bak")
+                    if keep_backup
+                    else None
+                ),
+                plan.command(),
+            )
+
+    def test_dry_run_prints_preview_without_prompting_or_executing(self):
+        executor = self.RecordingExecutor()
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "repair",
+                    "My Movie.mkv",
+                    "42",
+                    "--default",
+                    "true",
+                    "--name",
+                    "Main Audio",
+                    "--language",
+                    "en-US",
+                    "--dry-run",
+                ],
+                input_fn=lambda: self.fail("dry run must not prompt"),
+                repair_executor=executor,
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(executor.calls, [])
+        self.assertIn("Repair plan (metadata only):\n", output.getvalue())
+        self.assertIn("'My Movie.mkv'", output.getvalue())
+        self.assertIn("--set flag-default=1", output.getvalue())
+        self.assertIn("--set 'name=Main Audio'", output.getvalue())
+        self.assertIn("--set language-ietf=en-US", output.getvalue())
+        self.assertTrue(output.getvalue().endswith("Dry run: no changes made.\n"))
+
+    def test_requires_full_yes_after_showing_preview(self):
+        executor = self.RecordingExecutor()
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["repair", "movie.mkv", "7", "--default", "false"],
+                input_fn=lambda: "y",
+                repair_executor=executor,
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(executor.calls, [])
+        self.assertLess(
+            output.getvalue().index("mkvpropedit"),
+            output.getvalue().index("Type 'yes'"),
+        )
+        self.assertTrue(output.getvalue().endswith("Repair cancelled.\n"))
+
+    def test_explicit_yes_executes_confirmed_plan(self):
+        executor = self.RecordingExecutor()
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["repair", "movie.mkv", "7", "--name", "Commentary"],
+                input_fn=lambda: " YES ",
+                repair_executor=executor,
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertEqual(len(executor.calls), 1)
+        plan, confirmed, keep_backup = executor.calls[0]
+        self.assertTrue(confirmed)
+        self.assertFalse(keep_backup)
+        self.assertEqual(plan.changes[0].name, "Commentary")
+        self.assertIn("Repair applied and validated.", output.getvalue())
+
+    def test_keep_backup_is_an_explicit_option(self):
+        executor = self.RecordingExecutor()
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                [
+                    "repair",
+                    "movie.mkv",
+                    "7",
+                    "--name",
+                    "Commentary",
+                    "--keep-backup",
+                ],
+                input_fn=lambda: "yes",
+                repair_executor=executor,
+            )
+
+        self.assertEqual(exit_code, 0)
+        self.assertTrue(executor.calls[0][2])
+        self.assertIn("Backup retained at:", output.getvalue())
+
+    def test_rejects_repair_without_a_metadata_change(self):
+        executor = self.RecordingExecutor()
+        output = StringIO()
+
+        with redirect_stdout(output):
+            exit_code = main(
+                ["repair", "movie.mkv", "7", "--dry-run"],
+                repair_executor=executor,
+            )
+
+        self.assertEqual(exit_code, 2)
+        self.assertIn("at least one property", output.getvalue())
+        self.assertEqual(executor.calls, [])
 
 
 if __name__ == "__main__":
